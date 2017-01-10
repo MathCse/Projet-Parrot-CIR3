@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../lib/basics.h
+cstdint
+-
+mutex
+-
+queue
+-
+condition_variable
+-
+atomic
+-
+thread
+-
+cstring
+-
+
+../lib/control.h
+cstdint
+-
+basics.h
+../lib/basics.h
+
+../lib/image.h
+basics.h
+../lib/basics.h
+
+/home/adrien/parrot/libsumo/projetCIR/main.cpp
+iostream
+-
+opencv2/highgui/highgui.hpp
+-
+opencv2/imgproc/imgproc.hpp
+-
+control.h
+-
+image.h
+-
+

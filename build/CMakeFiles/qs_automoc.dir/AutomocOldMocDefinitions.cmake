@@ -1,0 +1,1 @@
+set(AM_OLD_COMPILE_SETTINGS "QT_CORE_LIB;QT_GUI_LIB;QT_NO_DEBUG ~~~ /home/adrien/parrot/libsumo/build;/home/adrien/parrot/libsumo;/home/adrien/parrot/libsumo/lib;/usr/include/opencv;/usr/include/qt4;/usr/include/qt4/QtGui;/usr/include/qt4/QtCore;/usr/include ~~~  ~~~ FALSE ~~~ ")

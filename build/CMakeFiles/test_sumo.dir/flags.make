@@ -6,5 +6,5 @@ CXX_FLAGS =  -std=c++11 -Wall -Wextra
 
 CXX_DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG
 
-CXX_INCLUDES = -I/home/adrien/parrot/libsumo/build -I/home/adrien/parrot/libsumo -I/home/adrien/parrot/libsumo/lib -I/usr/include/opencv -isystem /usr/include/qt4 -isystem /usr/include/qt4/QtGui -isystem /usr/include/qt4/QtCore 
+CXX_INCLUDES = -I/home/adrien/parrot/Projet-Parrot-CIR3/build -I/home/adrien/parrot/Projet-Parrot-CIR3 -I/home/adrien/parrot/Projet-Parrot-CIR3/lib -I/usr/include/opencv -isystem /usr/include/qt4 -isystem /usr/include/qt4/QtGui -isystem /usr/include/qt4/QtCore 
 

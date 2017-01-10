@@ -32,7 +32,7 @@ basics.h
 basics.h
 ../lib/basics.h
 
-/home/adrien/parrot/libsumo/projetCIR/main.cpp
+/home/adrien/parrot/Projet-Parrot-CIR3/projetCIR/main.cpp
 iostream
 -
 opencv2/highgui/highgui.hpp

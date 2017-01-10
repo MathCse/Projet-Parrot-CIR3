@@ -5,6 +5,7 @@
 
 #include <control.h>
 #include <image.h>
+#include <unistd.h>
 
 using namespace std;
 using namespace cv;
@@ -16,10 +17,10 @@ class ImageProcessing : public sumo::Image
 public:
 	void handleImage(const struct sumo::image *, const uint8_t *buffer, size_t size)
 	{
-    std::vector<uint8_t> v;
-    v.assign(buffer, buffer+size);
-    cv::Mat img = cv::imdecode(v, CV_LOAD_IMAGE_COLOR);
     cout << "receive frame" << endl; //ttest
+    std::vector<uint8_t> v;
+    //v.assign(buffer, buffer+size);
+    //cv::Mat img = cv::imdecode(v, CV_LOAD_IMAGE_COLOR);
 		fprintf(stderr, "received image of %zu bytes at %p\n", size, buffer);
 	}
 };
@@ -34,6 +35,8 @@ int main(){
   //unconditional loop
 
   sumo::Control sumo(new ImageProcessing);
+
+    sumo.open();
 
   while (true) {
     Mat cameraFrame;
@@ -52,11 +55,15 @@ int main(){
     imshow("cam", cameraFrame);
     imshow("result", dest);
     imshow("hsv", img_hsv);
+
       if (waitKey(30) >= 0){
           cout << "test" << endl;
-          cout << "batteryLevel: " << sumo.batteryLevel();
+          //cout << "batteryLevel: " << sumo.batteryLevel();
           //sumo.highJump();
-          break;
+          //sumo.flipUpsideDown();
+          sumo.move(20, 0);
+          
+          //usleep(1000000);
       }
     }
     return 0; // retour 0

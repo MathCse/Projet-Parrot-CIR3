@@ -52,7 +52,6 @@ module.exports = function (socket) {
   socket.on("forward", function(data){
     console.log("test forward");
     drone.backward(50);
-    drone.stop();
   });
   setInterval(function() {
     if (buf == null) {

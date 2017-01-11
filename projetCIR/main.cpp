@@ -1,15 +1,17 @@
-#include <iostream>
+#include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+
+#include <iostream>
+
 
 
 #include <control.h>
 #include <image.h>
 #include <unistd.h>
 
-using namespace std;
 using namespace cv;
-
+using namespace std;
 
 
 class ImageProcessing : public sumo::Image
@@ -25,44 +27,174 @@ public:
 	}
 };
 
-int main(){
-  VideoCapture stream1(0);   //0 is the id of video device.0 if you have only one camera.
 
-  if (!stream1.isOpened()) { //check if video device has been initialised
-    cout << "cannot open camera";
-  }
 
-  //unconditional loop
 
-  sumo::Control sumo(new ImageProcessing);
 
-    sumo.open();
+int DetectLines(Mat& src, Mat& dst)
+{
+    Mat cdst;
+    Canny(src, dst, 50, 200, 3);
+    cvtColor(dst, cdst, COLOR_GRAY2BGR);
 
-  while (true) {
-    Mat cameraFrame;
-    Mat dest;
-    stream1.read(cameraFrame);
-    flip(cameraFrame, cameraFrame, 1);
-    medianBlur ( cameraFrame, dest, 15 );
-    int radius = 50;
-    Point center(150, 150 );
-    circle(cameraFrame, center, radius, cv::Scalar(0, 255, 0), 5);
-
-    Mat img_hsv;
-    cvtColor(cameraFrame,img_hsv,CV_RGB2HSV);
-
-    imshow("cam", cameraFrame);
-    imshow("result", dest);
-    imshow("hsv", img_hsv);
-
-      if (waitKey(30) >= 0){
-          cout << "test" << endl;
-          //cout << "batteryLevel: " << sumo.batteryLevel();
-          //sumo.highJump();
-          //sumo.flipUpsideDown();
-          sumo.move(20, 0);
-          //usleep(1000000);
-      }
+    vector<Vec4i> lines;
+    HoughLinesP(dst, lines, 1, CV_PI / 180, 50, 50, 10);
+    //if (lines.size()>300000){
+    for (size_t i = 0; i < lines.size(); i++)
+    {
+        Vec4i l = lines[i];
+        line(cdst, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0, 0, 255), 3, 2);
     }
-    return 0; // retour 0
+    //}
+
+    return 0;
+}
+
+int DetectRed(Mat& src, Mat& dst){
+   Mat3b bgr = src;
+
+   Mat3b hsv;
+   cvtColor(bgr, hsv, COLOR_BGR2HSV);
+
+    Mat1b mask1, mask2;
+    inRange(hsv, Scalar(64, 183, 95), Scalar(136, 255, 164), mask1);
+    //inRange(hsv, Scalar(170, 70, 50), Scalar(180, 255, 255), mask2);
+
+    //inRange(bgr, Scalar(90, 235, 235), Scalar(0, 0, 85), mask2); //BGR
+
+    Mat1b mask = mask1 | mask2;
+    dst = mask;
+}
+
+int main(int argc, char** argv)
+{
+
+		//Ouverture du sumo
+	  sumo::Control * sumo = new sumo::Control(new ImageProcessing);
+	  sumo->open();
+
+
+    VideoCapture stream1(0);
+    while(true){
+      Mat cameraFrame;
+      Mat dest;
+      stream1.read(cameraFrame);
+      flip(cameraFrame, cameraFrame, 1);
+      Mat cameraFrameOrigin = cameraFrame;
+      DetectRed(cameraFrame, cameraFrame);
+      Mat element = Mat();
+
+
+  /// Apply the erosion operation
+  erode( cameraFrame, cameraFrame, element);
+   dilate( cameraFrame, cameraFrame, element );
+    dilate( cameraFrame, cameraFrame, element );
+
+vector<vector<Point> > contours;
+vector<Vec4i> heirarchy;
+vector<Point2i> center;
+vector<int> radius;
+
+
+    cv::findContours( cameraFrame.clone(), contours, heirarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE);
+
+size_t count = contours.size();
+
+
+for( int i=0; i<count; i++)
+{
+    cv::Point2f c;
+    float r;
+    cv::minEnclosingCircle( contours[i], c, r);
+
+    //if (!enableRadiusCulling || r >= minTargetRadius)
+    //{
+        center.push_back(c);
+        radius.push_back(r);
+    //}
+}
+
+size_t count2 = center.size();
+cv::Scalar red(255,0,0);
+
+int max = 0;
+int maxi = 0;
+for( int i = 0; i < count2; i++)
+{
+  // cv::circle(cameraFrameOrigin, center[i], radius[i], red, 3);
+  if(radius[i] >= max){
+    maxi = i;
+    max = radius[i];
   }
+}
+      if(!center.empty() && radius.size() == center.size() && maxi < center.size()){
+        cout << "center[" << maxi << "] : " << center[maxi].x <<   endl;
+        cv::circle(cameraFrameOrigin, center[maxi], max, red, 3);
+
+        if(center[maxi].x < cameraFrame.cols/3){
+          if(center[maxi].y < cameraFrame.rows/3){
+            cout << "Avancer gauche" << endl;
+						sumo->move(10,-20);
+
+          }
+          else if(center[maxi].y < 2*cameraFrame.rows/3){
+            cout << "Gauche" << endl;
+						sumo->move(10, -90);
+          }
+          else if(center[maxi].y < cameraFrame.rows){
+            cout << "Reculer gauche" << endl;
+						sumo->move(-10, 20);
+
+          }
+        }
+        else if(center[maxi].x < 2*cameraFrame.cols/3){
+          if(center[maxi].y < cameraFrame.rows/3){
+            cout << "Avancer" << endl;
+						sumo->move(15, 0);
+          }
+          else if(center[maxi].y < 2*cameraFrame.rows/3){
+            cout << "Arrêt" << endl;
+						sumo->move(0,0);
+          }
+          else if(center[maxi].y < cameraFrame.rows){
+            cout << "Reculer" << endl;
+						sumo->move(-30,0);
+          }
+        }
+        else if(center[maxi].x < cameraFrame.cols){
+          if(center[maxi].y < cameraFrame.rows/3){
+            cout << "Avancer droite" << endl;
+						sumo->move(10, 20);
+          }
+          else if(center[maxi].y < 2*cameraFrame.rows/3){
+            cout << "Droite" << endl;
+						sumo->move(10, 90);
+          }
+          else if(center[maxi].y < cameraFrame.rows){
+            cout << "Reculer droite" << endl;
+						sumo->move(-10, -90);
+          }
+        }
+
+
+      }else{
+				cout << "Arret" << endl;
+				sumo->move(0,0);
+			}
+
+    //cout << "max : " << max << endl;
+    //cout << "maxi: " << maxi << endl;
+    cout << "rows" << cameraFrame.rows << endl;
+    cout << "cols" << cameraFrame.cols << endl;
+      imshow("Camera", cameraFrameOrigin);
+
+
+
+
+      //imshow("result", dest);
+    if(waitKey(30)>=0)
+      break;
+    }
+
+    return 0;
+}

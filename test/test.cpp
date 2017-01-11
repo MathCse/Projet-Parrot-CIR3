@@ -21,12 +21,15 @@
  */
 #include <control.h>
 #include <image.h>
+#include <iostream>
 
+using namespace std;
 class ImageProcessing : public sumo::Image
 {
 public:
 	void handleImage(const struct sumo::image *, const uint8_t *buffer, size_t size)
 	{
+		cout << "test" << endl;
 		fprintf(stderr, "received image of %zu bytes at %p\n", size, buffer);
 	}
 };

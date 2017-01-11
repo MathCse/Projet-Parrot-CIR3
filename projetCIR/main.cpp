@@ -50,7 +50,6 @@ int main(){
 
     Mat img_hsv;
     cvtColor(cameraFrame,img_hsv,CV_RGB2HSV);
-    
 
     imshow("cam", cameraFrame);
     imshow("result", dest);
@@ -62,7 +61,6 @@ int main(){
           //sumo.highJump();
           //sumo.flipUpsideDown();
           sumo.move(20, 0);
-          
           //usleep(1000000);
       }
     }

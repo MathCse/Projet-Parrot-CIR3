@@ -13,6 +13,13 @@
 using namespace cv;
 using namespace std;
 
+class OurCircle{
+	public:
+		Point2i center;
+		int radius;
+		bool exist;
+};
+
 
 class ImageProcessing : public sumo::Image
 {
@@ -26,13 +33,19 @@ public:
 		fprintf(stderr, "received image of %zu bytes at %p\n", size, buffer);
 	}
 };
-int H_MIN = 0;
-int H_MAX = 255;
-int S_MIN = 0;
-int S_MAX = 255;
-int V_MIN = 0;
-int V_MAX = 255;
+int H_MIN_GREEN = 0;
+int H_MAX_GREEN = 255;
+int S_MIN_GREEN = 0;
+int S_MAX_GREEN = 255;
+int V_MIN_GREEN = 0;
+int V_MAX_GREEN = 255;
 
+int H_MIN_RED = 0;
+int H_MAX_RED = 255;
+int S_MIN_RED = 0;
+int S_MAX_RED = 255;
+int V_MIN_RED = 0;
+int V_MAX_RED = 255;
 
 int DetectLines(Mat& src, Mat& dst)
 {
@@ -53,7 +66,7 @@ int DetectLines(Mat& src, Mat& dst)
     return 0;
 }
 
-int DetectRed(Mat& src, Mat& dst){
+int detectColor(Mat& src, Mat& dst, int H_MIN, int H_MAX , int S_MIN,int S_MAX, int V_MIN, int  V_MAX ){
    Mat3b bgr = src;
 
    Mat3b hsv;
@@ -66,64 +79,24 @@ int DetectRed(Mat& src, Mat& dst){
     //inRange(bgr, Scalar(90, 235, 235), Scalar(0, 0, 85), mask2); //BGR
 
     Mat1b mask = mask1 | mask2;
-    dst = mask;
+		Mat element = Mat();
+
+		dst = mask;
+		/// Apply the erosion operation
+		erode( dst, dst, element);
+		dilate( dst, dst, element );
+		dilate( dst, dst, element );
 }
 
-sumo::Control * Sumo;
+
+OurCircle findPoint(Mat& filter){
+			vector<vector<Point> > contours;
+			vector<Vec4i> heirarchy;
+			vector<Point2i> center;
+			vector<int> radius;
 
 
-void on_trackbar(int, void*)
-{//This function gets called whenever a
-	// trackbar position is changed
-	cout <<"H: " <<  H_MIN << ", " << H_MAX << endl;
-}
-void createTrackbars()
-{
-	String trackbarWindowName = "TrackBars";
-	namedWindow(trackbarWindowName, WINDOW_NORMAL);
-	createTrackbar("H_MIN", trackbarWindowName, &H_MIN, H_MAX, on_trackbar);
-	createTrackbar("H_MAX", trackbarWindowName, &H_MAX, H_MAX, on_trackbar);
-	createTrackbar("S_MIN", trackbarWindowName, &S_MIN, S_MAX, on_trackbar);
-	createTrackbar("S_MAX", trackbarWindowName, &S_MAX, S_MAX, on_trackbar);
-	createTrackbar("V_MIN", trackbarWindowName, &V_MIN, V_MAX, on_trackbar);
-	createTrackbar("V_MAX", trackbarWindowName, &V_MAX, V_MAX, on_trackbar);
-}
-
-int main(int argc, char** argv)
-{
-
-		createTrackbars();
-		on_trackbar(0, 0);
-
-		//Ouverture du sumo
-	  Sumo = new sumo::Control(new ImageProcessing);
-		//Sumo->open();
-
-
-
-    VideoCapture stream1(0);
-    while(true){
-      Mat cameraFrame;
-      Mat dest;
-      stream1.read(cameraFrame);
-      flip(cameraFrame, cameraFrame, 1);
-      Mat cameraFrameOrigin = cameraFrame;
-      DetectRed(cameraFrame, cameraFrame);
-      Mat element = Mat();
-
-
-  /// Apply the erosion operation
-  erode( cameraFrame, cameraFrame, element);
-   dilate( cameraFrame, cameraFrame, element );
-    dilate( cameraFrame, cameraFrame, element );
-
-vector<vector<Point> > contours;
-vector<Vec4i> heirarchy;
-vector<Point2i> center;
-vector<int> radius;
-
-
-    cv::findContours( cameraFrame.clone(), contours, heirarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE);
+    cv::findContours( filter.clone(), contours, heirarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE);
 
 size_t count = contours.size();
 
@@ -141,91 +114,161 @@ for( int i=0; i<count; i++)
     //}
 }
 
-size_t count2 = center.size();
-cv::Scalar red(255,0,0);
+	size_t count2 = center.size();
 
-int max = 0;
-int maxi = 0;
-for( int i = 0; i < count2; i++)
-{
-  // cv::circle(cameraFrameOrigin, center[i], radius[i], red, 3);
-  if(radius[i] >= max){
-    maxi = i;
-    max = radius[i];
-  }
+	int max = 0;
+	int maxi = 0;
+	for( int i = 0; i < count2; i++)
+	{
+	  // cv::circle(cameraFrameOrigin, center[i], radius[i], red, 3);
+	  if(radius[i] >= max){
+	    maxi = i;
+	    max = radius[i];
+	  }
+	}
+	if(!center.empty() && radius.size() == center.size() && maxi < center.size()){
+		OurCircle c;
+		c.center = center[maxi];
+		c.radius = max;
+		c.exist = true;
+		return c;
+	}else{
+		OurCircle c;
+		c.exist = false;
+		return c;
+	}
 }
-      if(!center.empty() && radius.size() == center.size() && maxi < center.size()){
-        cout << "center[" << maxi << "] : " << center[maxi].x <<   endl;
-        cv::circle(cameraFrameOrigin, center[maxi], max, red, 3);
 
-        if(center[maxi].x < cameraFrame.cols/3){
-          if(center[maxi].y < cameraFrame.rows/3){
-            cout << "Avancer gauche" << endl;
-						if(Sumo)
-							Sumo->move(10,-20);
+void on_trackbar(int, void*)
+{//This function gets called whenever a
+	// trackbar position is changed
+	//cout <<"H: " <<  H_MIN << ", " << H_MAX << endl;
+}
+void createTrackbars()
+{
+	String trackbarWindowName = "TrackBars";
+	namedWindow(trackbarWindowName, WINDOW_NORMAL);
+	createTrackbar("H_MIN_GREEN", trackbarWindowName, &H_MIN_GREEN, H_MAX_GREEN, on_trackbar);
+	createTrackbar("H_MAX_GREEN", trackbarWindowName, &H_MAX_GREEN, H_MAX_GREEN, on_trackbar);
+	createTrackbar("S_MIN_GREEN", trackbarWindowName, &S_MIN_GREEN, S_MAX_GREEN, on_trackbar);
+	createTrackbar("S_MAX_GREEN", trackbarWindowName, &S_MAX_GREEN, S_MAX_GREEN, on_trackbar);
+	createTrackbar("V_MIN_GREEN", trackbarWindowName, &V_MIN_GREEN, V_MAX_GREEN, on_trackbar);
+	createTrackbar("V_MAX_GREEN", trackbarWindowName, &V_MAX_GREEN, V_MAX_GREEN, on_trackbar);
 
-          }
-          else if(center[maxi].y < 2*cameraFrame.rows/3){
-            cout << "Gauche" << endl;
-						if(Sumo)
-							Sumo->move(10, -90);
-          }
-          else if(center[maxi].y < cameraFrame.rows){
-            cout << "Reculer gauche" << endl;
-						if(Sumo)
-							Sumo->move(-10, 20);
+	createTrackbar("H_MIN_RED", trackbarWindowName, &H_MIN_RED, H_MAX_RED, on_trackbar);
+	createTrackbar("H_MAX_RED", trackbarWindowName, &H_MAX_RED, H_MAX_RED, on_trackbar);
+	createTrackbar("S_MIN_RED", trackbarWindowName, &S_MIN_RED, S_MAX_RED, on_trackbar);
+	createTrackbar("S_MAX_RED", trackbarWindowName, &S_MAX_RED, S_MAX_RED, on_trackbar);
+	createTrackbar("V_MIN_RED", trackbarWindowName, &V_MIN_RED, V_MAX_RED, on_trackbar);
+	createTrackbar("V_MAX_RED", trackbarWindowName, &V_MAX_RED, V_MAX_RED, on_trackbar);
+}
 
-          }
-        }
-        else if(center[maxi].x < 2*cameraFrame.cols/3){
-          if(center[maxi].y < cameraFrame.rows/3){
-            cout << "Avancer" << endl;
-						if(Sumo)
-							Sumo->move(15, 0);
-          }
-          else if(center[maxi].y < 2*cameraFrame.rows/3){
-            cout << "Arrêt" << endl;
-						if(Sumo)
-							Sumo->move(0,0);
-          }
-          else if(center[maxi].y < cameraFrame.rows){
-            cout << "Reculer" << endl;
-						if(Sumo)
-							Sumo->move(-30,0);
-          }
-        }
-        else if(center[maxi].x < cameraFrame.cols){
-          if(center[maxi].y < cameraFrame.rows/3){
-            cout << "Avancer droite" << endl;
-						if(Sumo)
-							Sumo->move(10, 20);
-          }
-          else if(center[maxi].y < 2*cameraFrame.rows/3){
-            cout << "Droite" << endl;
-						if(Sumo)
-							Sumo->move(10, 90);
-          }
-          else if(center[maxi].y < cameraFrame.rows){
-            cout << "Reculer droite" << endl;
-						if(Sumo)
-							Sumo->move(-10, -90);
-          }
-        }
+int main(int argc, char** argv)
+{
+
+		createTrackbars();
+		on_trackbar(0, 0);
+
+		//Ouverture du sumo
+		sumo::Control * Sumo;
+	  Sumo = new sumo::Control(new ImageProcessing);
+		//Sumo->open();
 
 
-      }else{
-				cout << "Arret" << endl;
-				if(Sumo)
-					Sumo->move(0,0);
+
+    VideoCapture stream1(0);
+    while(true){
+      Mat cameraFrame;
+			Mat redFilter;
+			Mat greenFilter;
+
+      stream1.read(cameraFrame);
+      flip(cameraFrame, cameraFrame, 1);
+
+      Mat cameraFrameOrigin = cameraFrame;
+      detectColor(cameraFrame, redFilter, H_MIN_RED, H_MAX_RED, S_MIN_RED, S_MAX_RED, V_MIN_RED, V_MAX_RED);
+			detectColor(cameraFrame, greenFilter, H_MIN_GREEN, H_MAX_GREEN, S_MIN_GREEN, S_MAX_GREEN, V_MIN_GREEN, V_MAX_GREEN);
+
+			OurCircle redPoint;
+			redPoint = findPoint(greenFilter);
+			if(redPoint.exist){
+				cv::Scalar blue(0,255,0);
+				cv::circle(cameraFrame, redPoint.center, redPoint.radius, blue, 3);
+			}
+			
+			OurCircle c;
+			c = findPoint(redFilter);
+			if(c.exist){
+			  //cout << "center[" << maxi << "] : " << c.center.x <<   endl;
+				cv::Scalar red(255,0,0);
+			  cv::circle(cameraFrame, c.center, c.radius, red, 3);
+
+			  if(c.center.x < redFilter.cols/3){
+			    if(c.center.y < redFilter.rows/3){
+			      cout << "Avancer gauche" << endl;
+			      if(Sumo)
+			        Sumo->move(10,-20);
+
+			    }
+			    else if(c.center.y < 2*redFilter.rows/3){
+			      cout << "Gauche" << endl;
+			      if(Sumo)
+			        Sumo->move(10, -90);
+			    }
+			    else if(c.center.y < redFilter.rows){
+			      cout << "Reculer gauche" << endl;
+			      if(Sumo)
+			        Sumo->move(-10, 20);
+
+			    }
+			  }
+			  else if(c.center.x < 2*redFilter.cols/3){
+			    if(c.center.y < redFilter.rows/3){
+			      cout << "Avancer" << endl;
+			      if(Sumo)
+			        Sumo->move(15, 0);
+			    }
+			    else if(c.center.y < 2*redFilter.rows/3){
+			      cout << "Arrêt" << endl;
+			      if(Sumo)
+			        Sumo->move(0,0);
+			    }
+			    else if(c.center.y < redFilter.rows){
+			      cout << "Reculer" << endl;
+			      if(Sumo)
+			        Sumo->move(-30,0);
+			    }
+			  }
+			  else if(c.center.x < redFilter.cols){
+			    if(c.center.y < redFilter.rows/3){
+			      cout << "Avancer droite" << endl;
+			      if(Sumo)
+			        Sumo->move(10, 20);
+			    }
+			    else if(c.center.y < 2*redFilter.rows/3){
+			      cout << "Droite" << endl;
+			      if(Sumo)
+			        Sumo->move(10, 90);
+			    }
+			    else if(c.center.y < redFilter.rows){
+			      cout << "Reculer droite" << endl;
+			      if(Sumo)
+			        Sumo->move(-10, -90);
+			    }
+			  }
+			}else{
+			  cout << "Arret" << endl;
+			  if(Sumo)
+			    Sumo->move(0,0);
 			}
 
     //cout << "max : " << max << endl;
     //cout << "maxi: " << maxi << endl;
     //cout << "rows" << cameraFrame.rows << endl;
     //cout << "cols" << cameraFrame.cols << endl;
-    imshow("Camera", cameraFrameOrigin);
-		imshow("Result", cameraFrame);
-
+    imshow("Camera", cameraFrame);
+		imshow("Red", redFilter);
+		imshow("Green", greenFilter);
 
 
       //imshow("result", dest);

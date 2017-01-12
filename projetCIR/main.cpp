@@ -3,7 +3,9 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <iostream>
-
+#include <fstream>
+#include <string>
+#include <sstream>
 
 
 #include <control.h>
@@ -46,6 +48,21 @@ int S_MIN_RED = 0;
 int S_MAX_RED = 255;
 int V_MIN_RED = 0;
 int V_MAX_RED = 255;
+
+int H_MIN_GREEN_DEFAULT = 0;
+int H_MAX_GREEN_DEFAULT = 255;
+int S_MIN_GREEN_DEFAULT = 0;
+int S_MAX_GREEN_DEFAULT = 255;
+int V_MIN_GREEN_DEFAULT = 0;
+int V_MAX_GREEN_DEFAULT = 255;
+
+int H_MIN_RED_DEFAULT = 0;
+int H_MAX_RED_DEFAULT = 255;
+int S_MIN_RED_DEFAULT = 0;
+int S_MAX_RED_DEFAULT = 255;
+int V_MIN_RED_DEFAULT = 0;
+int V_MAX_RED_DEFAULT = 255;
+
 
 int DetectLines(Mat& src, Mat& dst)
 {
@@ -139,6 +156,69 @@ for( int i=0; i<count; i++)
 	}
 }
 
+
+bool readDefaultCalibration(){
+	ifstream infile("../default.par", ios::in);
+	if(infile){
+		string line;
+
+		getline(infile, line);
+		H_MIN_GREEN_DEFAULT = atoi(line.c_str());
+		cout << "H_MIN GREEN DEFAULT" <<  H_MIN_GREEN_DEFAULT << endl;
+		getline(infile, line);
+		H_MAX_GREEN_DEFAULT = atoi(line.c_str());
+		getline(infile, line);
+		S_MIN_GREEN_DEFAULT = atoi(line.c_str());
+		getline(infile, line);
+		S_MAX_GREEN_DEFAULT = atoi(line.c_str());
+		getline(infile, line);
+		V_MIN_GREEN_DEFAULT = atoi(line.c_str());
+		getline(infile, line);
+		V_MAX_GREEN_DEFAULT = atoi(line.c_str());
+
+		getline(infile, line);
+		H_MIN_RED_DEFAULT = atoi(line.c_str());
+		getline(infile, line);
+		H_MAX_RED_DEFAULT = atoi(line.c_str());
+		getline(infile, line);
+		S_MIN_RED_DEFAULT = atoi(line.c_str());
+		getline(infile, line);
+		S_MAX_RED_DEFAULT = atoi(line.c_str());
+		getline(infile, line);
+		V_MIN_RED_DEFAULT = atoi(line.c_str());
+		getline(infile, line);
+		V_MAX_RED_DEFAULT = atoi(line.c_str());
+		infile.close();
+		return true;
+	}
+
+	return false;
+
+}
+
+bool writeDefaultCalibration(){
+	ofstream infile("../default.par", ios::out);
+	if(infile){
+		infile << H_MIN_GREEN << endl;
+		infile << H_MAX_GREEN << endl;
+		infile << S_MIN_GREEN << endl;
+		infile << S_MAX_GREEN << endl;
+		infile << V_MIN_GREEN << endl;
+		infile << V_MAX_GREEN << endl;
+
+		infile << H_MIN_RED << endl;
+		infile << H_MAX_RED << endl;
+		infile << S_MIN_RED << endl;
+		infile << S_MAX_RED << endl;
+		infile << V_MIN_RED << endl;
+		infile << V_MAX_RED << endl;
+		infile.close();
+		return true;
+	}
+	return false;
+}
+
+
 void on_trackbar(int, void*)
 {//This function gets called whenever a
 	// trackbar position is changed
@@ -147,6 +227,7 @@ void on_trackbar(int, void*)
 void createTrackbars()
 {
 	String trackbarWindowName = "TrackBars";
+	readDefaultCalibration();
 	namedWindow(trackbarWindowName, WINDOW_NORMAL);
 	createTrackbar("H_MIN_GREEN", trackbarWindowName, &H_MIN_GREEN, H_MAX_GREEN, on_trackbar);
 	createTrackbar("H_MAX_GREEN", trackbarWindowName, &H_MAX_GREEN, H_MAX_GREEN, on_trackbar);
@@ -162,22 +243,21 @@ void createTrackbars()
 	createTrackbar("V_MIN_RED", trackbarWindowName, &V_MIN_RED, V_MAX_RED, on_trackbar);
 	createTrackbar("V_MAX_RED", trackbarWindowName, &V_MAX_RED, V_MAX_RED, on_trackbar);
 
-	setTrackbarPos("H_MIN_GREEN", trackbarWindowName, 64);
-	setTrackbarPos("H_MAX_GREEN", trackbarWindowName, 136);
-	setTrackbarPos("S_MIN_GREEN", trackbarWindowName, 183);
-	setTrackbarPos("S_MAX_GREEN", trackbarWindowName, 255);
-	setTrackbarPos("V_MIN_GREEN", trackbarWindowName, 95);
-	setTrackbarPos("V_MAX_GREEN", trackbarWindowName, 164);
+	setTrackbarPos("H_MIN_GREEN", trackbarWindowName, H_MIN_GREEN_DEFAULT);
+	setTrackbarPos("H_MAX_GREEN", trackbarWindowName, H_MAX_GREEN_DEFAULT);
+	setTrackbarPos("S_MIN_GREEN", trackbarWindowName, S_MIN_GREEN_DEFAULT);
+	setTrackbarPos("S_MAX_GREEN", trackbarWindowName, S_MAX_GREEN_DEFAULT);
+	setTrackbarPos("V_MIN_GREEN", trackbarWindowName, V_MIN_GREEN_DEFAULT);
+	setTrackbarPos("V_MAX_GREEN", trackbarWindowName, V_MAX_GREEN_DEFAULT);
 
-	setTrackbarPos("H_MIN_RED", trackbarWindowName, 129);
-	setTrackbarPos("H_MAX_RED", trackbarWindowName, 255);
-	setTrackbarPos("S_MIN_RED", trackbarWindowName, 146);
-	setTrackbarPos("S_MAX_RED", trackbarWindowName, 255);
-	setTrackbarPos("V_MIN_RED", trackbarWindowName, 151);
-	setTrackbarPos("V_MAX_RED", trackbarWindowName, 255);
-
-
+	setTrackbarPos("H_MIN_RED", trackbarWindowName, H_MIN_RED_DEFAULT);
+	setTrackbarPos("H_MAX_RED", trackbarWindowName, H_MAX_RED_DEFAULT);
+	setTrackbarPos("S_MIN_RED", trackbarWindowName, S_MIN_RED_DEFAULT);
+	setTrackbarPos("S_MAX_RED", trackbarWindowName, S_MAX_RED_DEFAULT);
+	setTrackbarPos("V_MIN_RED", trackbarWindowName, V_MIN_RED_DEFAULT);
+	setTrackbarPos("V_MAX_RED", trackbarWindowName, V_MAX_RED_DEFAULT);
 }
+
 
 int main(int argc, char** argv)
 {
@@ -188,7 +268,7 @@ int main(int argc, char** argv)
 		//Ouverture du sumo
 		sumo::Control * Sumo;
 	  Sumo = new sumo::Control(new ImageProcessing);
-		int sumoOk=1;
+		int sumoOk=0;
 
 		if(sumoOk == 1){
 			Sumo->open();
@@ -204,7 +284,35 @@ int main(int argc, char** argv)
     double fps = 15;
     OurCircle oldRedPoint;
     stream1.set(CV_CAP_PROP_FPS, fps);
+
+		bool calibration = true;
+		while (calibration){
+			Mat redFilter;
+			Mat greenFilter;
+			Mat cameraFrame;
+			stream1.read(cameraFrame);
+			flip(cameraFrame, cameraFrame, 1);
+
+			detectColor(cameraFrame, redFilter, H_MIN_RED, H_MAX_RED, S_MIN_RED, S_MAX_RED, V_MIN_RED, V_MAX_RED);
+			detectColor(cameraFrame, greenFilter, H_MIN_GREEN, H_MAX_GREEN, S_MIN_GREEN, S_MAX_GREEN, V_MIN_GREEN, V_MAX_GREEN);
+			Point2i smallWord;
+			smallWord.x = 10;//cameraFrame.cols/2;
+			smallWord.y = 10;
+
+			//putText(cameraFrame, "Calibration vert", Point(20,20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 255, 0), 2);
+
+			imshow("Green calibration", greenFilter);
+			imshow("Red calibration", redFilter);
+
+			if(waitKey(30)>=0){
+				writeDefaultCalibration();
+				destroyAllWindows();
+				break;
+			}
+		}
+
     while(true){
+
       deltaT +=1/fps;
 
       Mat cameraFrame;
@@ -231,7 +339,9 @@ int main(int argc, char** argv)
             cout << (-oldRedPoint.center.y+redPoint.center.y)<< endl;
               if((-oldRedPoint.center.y+redPoint.center.y)<-60){
                 std::cout << " JUMP! " << endl;
-                Sumo->highJump();
+								if(sumoOk && Sumo){
+                	Sumo->highJump();
+								}
               }
           }
           deltaT = 0;

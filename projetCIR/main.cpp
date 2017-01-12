@@ -161,6 +161,22 @@ void createTrackbars()
 	createTrackbar("S_MAX_RED", trackbarWindowName, &S_MAX_RED, S_MAX_RED, on_trackbar);
 	createTrackbar("V_MIN_RED", trackbarWindowName, &V_MIN_RED, V_MAX_RED, on_trackbar);
 	createTrackbar("V_MAX_RED", trackbarWindowName, &V_MAX_RED, V_MAX_RED, on_trackbar);
+
+	setTrackbarPos("H_MIN_GREEN", trackbarWindowName, 64);
+	setTrackbarPos("H_MAX_GREEN", trackbarWindowName, 136);
+	setTrackbarPos("S_MIN_GREEN", trackbarWindowName, 183);
+	setTrackbarPos("S_MAX_GREEN", trackbarWindowName, 255);
+	setTrackbarPos("V_MIN_GREEN", trackbarWindowName, 95);
+	setTrackbarPos("V_MAX_GREEN", trackbarWindowName, 164);
+
+	setTrackbarPos("H_MIN_RED", trackbarWindowName, 129);
+	setTrackbarPos("H_MAX_RED", trackbarWindowName, 255);
+	setTrackbarPos("S_MIN_RED", trackbarWindowName, 146);
+	setTrackbarPos("S_MAX_RED", trackbarWindowName, 255);
+	setTrackbarPos("V_MIN_RED", trackbarWindowName, 151);
+	setTrackbarPos("V_MAX_RED", trackbarWindowName, 255);
+
+
 }
 
 int main(int argc, char** argv)
@@ -195,7 +211,7 @@ int main(int argc, char** argv)
 				cv::Scalar blue(0,255,0);
 				cv::circle(cameraFrame, redPoint.center, redPoint.radius, blue, 3);
 			}
-			
+
 			OurCircle c;
 			c = findPoint(redFilter);
 			if(c.exist){

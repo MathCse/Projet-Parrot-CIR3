@@ -268,7 +268,7 @@ int main(int argc, char** argv)
 		//Ouverture du sumo
 		sumo::Control * Sumo;
 	  Sumo = new sumo::Control(new ImageProcessing);
-		int sumoOk=0;
+		int sumoOk=1;
 
 		if(sumoOk == 1){
 			Sumo->open();
@@ -314,7 +314,7 @@ int main(int argc, char** argv)
     while(true){
       string battery = " ";
       if(Sumo && sumoOk){
-        //battery= to_string(Sumo->batteryLevel())+"%";
+        battery= to_string(Sumo->batteryLevel())+"%";
       }
       deltaT +=1/fps;
 
@@ -336,7 +336,6 @@ int main(int argc, char** argv)
 
           if(!oldRedPoint.exist){
             oldRedPoint = redPoint;
-            cout << "coucou" << endl;
           } else {
             cout << (-oldRedPoint.center.y+redPoint.center.y)<< endl;
               if((-oldRedPoint.center.y+redPoint.center.y)<-60){
@@ -344,6 +343,12 @@ int main(int argc, char** argv)
 								if(sumoOk && Sumo){
                 	Sumo->highJump();
 								}
+              }
+              if((-oldRedPoint.center.x+redPoint.center.x)>60){
+                std::cout << " slalom! " << endl;
+                if(sumoOk && Sumo){
+                  Sumo->slalom();
+                }
               }
           }
           deltaT = 0;
@@ -406,7 +411,7 @@ int main(int argc, char** argv)
 	          }
 	        } else {
 
-	          vitesse =  (double)(100/(double)(cameraFrame.rows/2))*(-c.center.y+cameraFrame.rows/2);
+	          vitesse =  (double)(75/(double)(cameraFrame.rows/2))*(-c.center.y+cameraFrame.rows/2);
 	          if (vitesse>0){
 	            if(angle>0){
 	              putText(cameraFrame, "Avancer droite", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
@@ -433,7 +438,7 @@ int main(int argc, char** argv)
 	      }
 				cout << "vitesse: " <<  vitesse << " angle: " << angle << endl;
         rectangle(cameraFrame, Point(10,50), Point(10+1.2*fabs(vitesse),70),Scalar(0, 0, 255), CV_FILLED);
-				if(Sumo)
+				if(Sumo && sumoOk)
 					Sumo->move(vitesse,angle);
 
 			}

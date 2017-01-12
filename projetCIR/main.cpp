@@ -7,7 +7,7 @@
 #include <string>
 #include <sstream>
 
-
+#include <string>
 #include <control.h>
 #include <image.h>
 #include <unistd.h>
@@ -312,21 +312,23 @@ int main(int argc, char** argv)
 		}
 
     while(true){
-
+      string battery = " ";
+      if(Sumo && sumoOk){
+        //battery= to_string(Sumo->batteryLevel())+"%";
+      }
       deltaT +=1/fps;
 
       Mat cameraFrame;
 			Mat redFilter;
 			Mat greenFilter;
-
       stream1.read(cameraFrame);
       flip(cameraFrame, cameraFrame, 1);
       Mat cameraFrameOrigin = cameraFrame;
       detectColor(cameraFrame, redFilter, H_MIN_RED, H_MAX_RED, S_MIN_RED, S_MAX_RED, V_MIN_RED, V_MAX_RED);
 			detectColor(cameraFrame, greenFilter, H_MIN_GREEN, H_MAX_GREEN, S_MIN_GREEN, S_MAX_GREEN, V_MIN_GREEN, V_MAX_GREEN);
-
 			OurCircle redPoint;
 			redPoint = findPoint(redFilter);
+       putText(cameraFrame, battery, Point(20,20) , FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1);
 			if(redPoint.exist){
 				cv::Scalar blue(0,255,0);
 				cv::circle(cameraFrame, redPoint.center, redPoint.radius, blue, 3);
@@ -430,8 +432,10 @@ int main(int argc, char** argv)
 	        angle = 0;
 	      }
 				cout << "vitesse: " <<  vitesse << " angle: " << angle << endl;
+        rectangle(cameraFrame, Point(10,50), Point(10+1.2*fabs(vitesse),70),Scalar(0, 0, 255), CV_FILLED);
 				if(Sumo)
 					Sumo->move(vitesse,angle);
+
 			}
 
 

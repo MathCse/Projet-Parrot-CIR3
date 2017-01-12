@@ -31,6 +31,7 @@ public:
 
 
 
+
 int DetectLines(Mat& src, Mat& dst)
 {
     Mat cdst;
@@ -66,12 +67,15 @@ int DetectRed(Mat& src, Mat& dst){
     dst = mask;
 }
 
+sumo::Control * Sumo;
+
 int main(int argc, char** argv)
 {
 
 		//Ouverture du sumo
-	  sumo::Control * sumo = new sumo::Control(new ImageProcessing);
-	  sumo->open();
+	  Sumo = new sumo::Control(new ImageProcessing);
+		//Sumo->open();
+
 
 
     VideoCapture stream1(0);
@@ -134,59 +138,69 @@ for( int i = 0; i < count2; i++)
         if(center[maxi].x < cameraFrame.cols/3){
           if(center[maxi].y < cameraFrame.rows/3){
             cout << "Avancer gauche" << endl;
-						sumo->move(10,-20);
+						if(Sumo)
+							Sumo->move(10,-20);
 
           }
           else if(center[maxi].y < 2*cameraFrame.rows/3){
             cout << "Gauche" << endl;
-						sumo->move(10, -90);
+						if(Sumo)
+							Sumo->move(10, -90);
           }
           else if(center[maxi].y < cameraFrame.rows){
             cout << "Reculer gauche" << endl;
-						sumo->move(-10, 20);
+						if(Sumo)
+							Sumo->move(-10, 20);
 
           }
         }
         else if(center[maxi].x < 2*cameraFrame.cols/3){
           if(center[maxi].y < cameraFrame.rows/3){
             cout << "Avancer" << endl;
-						sumo->move(15, 0);
+						if(Sumo)
+							Sumo->move(15, 0);
           }
           else if(center[maxi].y < 2*cameraFrame.rows/3){
             cout << "Arrêt" << endl;
-						sumo->move(0,0);
+						if(Sumo)
+							Sumo->move(0,0);
           }
           else if(center[maxi].y < cameraFrame.rows){
             cout << "Reculer" << endl;
-						sumo->move(-30,0);
+						if(Sumo)
+							Sumo->move(-30,0);
           }
         }
         else if(center[maxi].x < cameraFrame.cols){
           if(center[maxi].y < cameraFrame.rows/3){
             cout << "Avancer droite" << endl;
-						sumo->move(10, 20);
+						if(Sumo)
+							Sumo->move(10, 20);
           }
           else if(center[maxi].y < 2*cameraFrame.rows/3){
             cout << "Droite" << endl;
-						sumo->move(10, 90);
+						if(Sumo)
+							Sumo->move(10, 90);
           }
           else if(center[maxi].y < cameraFrame.rows){
             cout << "Reculer droite" << endl;
-						sumo->move(-10, -90);
+						if(Sumo)
+							Sumo->move(-10, -90);
           }
         }
 
 
       }else{
 				cout << "Arret" << endl;
-				sumo->move(0,0);
+				if(Sumo)
+					Sumo->move(0,0);
 			}
 
     //cout << "max : " << max << endl;
     //cout << "maxi: " << maxi << endl;
-    cout << "rows" << cameraFrame.rows << endl;
-    cout << "cols" << cameraFrame.cols << endl;
-      imshow("Camera", cameraFrameOrigin);
+    //cout << "rows" << cameraFrame.rows << endl;
+    //cout << "cols" << cameraFrame.cols << endl;
+    imshow("Camera", cameraFrameOrigin);
 
 
 

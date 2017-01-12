@@ -26,10 +26,12 @@ public:
 		fprintf(stderr, "received image of %zu bytes at %p\n", size, buffer);
 	}
 };
-
-
-
-
+int H_MIN = 0;
+int H_MAX = 255;
+int S_MIN = 0;
+int S_MAX = 255;
+int V_MIN = 0;
+int V_MAX = 255;
 
 
 int DetectLines(Mat& src, Mat& dst)
@@ -58,7 +60,7 @@ int DetectRed(Mat& src, Mat& dst){
    cvtColor(bgr, hsv, COLOR_BGR2HSV);
 
     Mat1b mask1, mask2;
-    inRange(hsv, Scalar(64, 183, 95), Scalar(136, 255, 164), mask1);
+    inRange(hsv, Scalar(H_MIN, S_MIN, V_MIN), Scalar(H_MAX, S_MAX, V_MAX), mask1);
     //inRange(hsv, Scalar(170, 70, 50), Scalar(180, 255, 255), mask2);
 
     //inRange(bgr, Scalar(90, 235, 235), Scalar(0, 0, 85), mask2); //BGR
@@ -69,8 +71,29 @@ int DetectRed(Mat& src, Mat& dst){
 
 sumo::Control * Sumo;
 
+
+void on_trackbar(int, void*)
+{//This function gets called whenever a
+	// trackbar position is changed
+	cout <<"H: " <<  H_MIN << ", " << H_MAX << endl;
+}
+void createTrackbars()
+{
+	String trackbarWindowName = "TrackBars";
+	namedWindow(trackbarWindowName, WINDOW_NORMAL);
+	createTrackbar("H_MIN", trackbarWindowName, &H_MIN, H_MAX, on_trackbar);
+	createTrackbar("H_MAX", trackbarWindowName, &H_MAX, H_MAX, on_trackbar);
+	createTrackbar("S_MIN", trackbarWindowName, &S_MIN, S_MAX, on_trackbar);
+	createTrackbar("S_MAX", trackbarWindowName, &S_MAX, S_MAX, on_trackbar);
+	createTrackbar("V_MIN", trackbarWindowName, &V_MIN, V_MAX, on_trackbar);
+	createTrackbar("V_MAX", trackbarWindowName, &V_MAX, V_MAX, on_trackbar);
+}
+
 int main(int argc, char** argv)
 {
+
+		createTrackbars();
+		on_trackbar(0, 0);
 
 		//Ouverture du sumo
 	  Sumo = new sumo::Control(new ImageProcessing);
@@ -201,7 +224,7 @@ for( int i = 0; i < count2; i++)
     //cout << "rows" << cameraFrame.rows << endl;
     //cout << "cols" << cameraFrame.cols << endl;
     imshow("Camera", cameraFrameOrigin);
-
+		imshow("Result", cameraFrame);
 
 
 

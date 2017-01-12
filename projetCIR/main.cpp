@@ -191,8 +191,11 @@ int main(int argc, char** argv)
 		//Sumo->open();
 
 
-
     VideoCapture stream1(0);
+		stream1.set(CV_CAP_PROP_FRAME_WIDTH, 800);
+		stream1.set(CV_CAP_PROP_FRAME_HEIGHT, 600);
+
+
     while(true){
       Mat cameraFrame;
 			Mat redFilter;
@@ -278,10 +281,6 @@ int main(int argc, char** argv)
 			    Sumo->move(0,0);
 			}
 
-    //cout << "max : " << max << endl;
-    //cout << "maxi: " << maxi << endl;
-    //cout << "rows" << cameraFrame.rows << endl;
-    //cout << "cols" << cameraFrame.cols << endl;
     imshow("Camera", cameraFrame);
 		imshow("Red", redFilter);
 		imshow("Green", greenFilter);

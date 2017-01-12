@@ -341,8 +341,8 @@ QT_QKRCODECS_PLUGIN_DEBUG:FILEPATH=QT_QKRCODECS_PLUGIN_DEBUG-NOTFOUND
 //Path to a library.
 QT_QKRCODECS_PLUGIN_RELEASE:FILEPATH=/usr/lib/x86_64-linux-gnu/qt4/plugins/codecs/libqkrcodecs.so
 
-//Where can the qmake-qt4 library be found
-QT_QMAKE_EXECUTABLE:FILEPATH=/usr/bin/qmake-qt4
+//The qmake executable for the Qt installation to use
+QT_QMAKE_EXECUTABLE:FILEPATH=/usr/bin/qmake
 
 //Path to a library.
 QT_QMNG_PLUGIN_DEBUG:FILEPATH=QT_QMNG_PLUGIN_DEBUG-NOTFOUND
@@ -732,16 +732,16 @@ QT_QTWCODECS_PLUGIN_DEBUG:FILEPATH=QT_QTWCODECS_PLUGIN_DEBUG-NOTFOUND
 QT_QTWCODECS_PLUGIN_RELEASE:FILEPATH=/usr/lib/x86_64-linux-gnu/qt4/plugins/codecs/libqtwcodecs.so
 
 //Path to a file.
-QT_QTWEBKIT_INCLUDE_DIR:PATH=/usr/include/qt4/QtWebKit
+QT_QTWEBKIT_INCLUDE_DIR:PATH=QT_QTWEBKIT_INCLUDE_DIR-NOTFOUND
 
 //The Qt QTWEBKIT library
-QT_QTWEBKIT_LIBRARY:STRING=/usr/lib/x86_64-linux-gnu/libQtWebKit.so
+QT_QTWEBKIT_LIBRARY:STRING=
 
 //Path to a library.
 QT_QTWEBKIT_LIBRARY_DEBUG:FILEPATH=QT_QTWEBKIT_LIBRARY_DEBUG-NOTFOUND
 
 //Path to a library.
-QT_QTWEBKIT_LIBRARY_RELEASE:FILEPATH=/usr/lib/x86_64-linux-gnu/libQtWebKit.so
+QT_QTWEBKIT_LIBRARY_RELEASE:FILEPATH=QT_QTWEBKIT_LIBRARY_RELEASE-NOTFOUND
 
 //Path to a file.
 QT_QTXMLPATTERNS_INCLUDE_DIR:PATH=/usr/include/qt4/QtXmlPatterns
@@ -952,7 +952,7 @@ COMPILER_SUPPORTS_CXX0X:INTERNAL=1
 //Test COMPILER_SUPPORTS_CXX11
 COMPILER_SUPPORTS_CXX11:INTERNAL=1
 //Details about finding Qt4
-FIND_PACKAGE_MESSAGE_DETAILS_Qt4:INTERNAL=[/usr/bin/qmake-qt4][/usr/lib/x86_64-linux-gnu/qt4/bin/moc][/usr/lib/x86_64-linux-gnu/qt4/bin/rcc][/usr/include/qt4][/usr/lib/x86_64-linux-gnu][/usr/include/qt4/QtCore][/usr/lib/x86_64-linux-gnu/libQtCore.so][/usr/include/qt4/QtGui][/usr/lib/x86_64-linux-gnu/libQtGui.so][/usr/lib/x86_64-linux-gnu/qt4/bin/uic][v4.8.7()]
+FIND_PACKAGE_MESSAGE_DETAILS_Qt4:INTERNAL=[/usr/bin/qmake][/usr/lib/x86_64-linux-gnu/qt4/bin/moc][/usr/lib/x86_64-linux-gnu/qt4/bin/rcc][/usr/include/qt4][/usr/lib/x86_64-linux-gnu][/usr/include/qt4/QtCore][/usr/lib/x86_64-linux-gnu/libQtCore.so][/usr/include/qt4/QtGui][/usr/lib/x86_64-linux-gnu/libQtGui.so][/usr/lib/x86_64-linux-gnu/qt4/bin/uic][v4.8.7()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //ADVANCED property for variable: OpenCV_3RDPARTY_LIB_DIR_DBG
@@ -1073,7 +1073,7 @@ QT_QJPEG_PLUGIN_RELEASE-ADVANCED:INTERNAL=1
 QT_QKRCODECS_PLUGIN_DEBUG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: QT_QKRCODECS_PLUGIN_RELEASE
 QT_QKRCODECS_PLUGIN_RELEASE-ADVANCED:INTERNAL=1
-QT_QMAKE_EXECUTABLE_LAST:INTERNAL=/usr/bin/qmake-qt4
+QT_QMAKE_EXECUTABLE_LAST:INTERNAL=/usr/bin/qmake
 //ADVANCED property for variable: QT_QMNG_PLUGIN_DEBUG
 QT_QMNG_PLUGIN_DEBUG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: QT_QMNG_PLUGIN_RELEASE

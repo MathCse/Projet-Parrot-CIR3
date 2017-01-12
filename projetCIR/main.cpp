@@ -120,7 +120,7 @@ for( int i=0; i<count; i++)
 	int maxi = 0;
 	for( int i = 0; i < count2; i++)
 	{
-	  // cv::circle(cameraFrameOrigin, center[i], radius[i], red, 3);
+	  // cv::circle(cameraFrame, center[i], radius[i], red, 3);
 	  if(radius[i] >= max){
 	    maxi = i;
 	    max = radius[i];
@@ -188,7 +188,7 @@ int main(int argc, char** argv)
 		//Ouverture du sumo
 		sumo::Control * Sumo;
 	  Sumo = new sumo::Control(new ImageProcessing);
-		//Sumo->open();
+		Sumo->open();
 
 
     VideoCapture stream1(0);
@@ -217,71 +217,89 @@ int main(int argc, char** argv)
 
 			OurCircle c;
 			c = findPoint(redFilter);
+			double vitesse, angle;
 			if(c.exist){
-			  //cout << "center[" << maxi << "] : " << c.center.x <<   endl;
+				Point2i smallWord = c.center;
+        smallWord.x -= 40;
+        smallWord.y += 10;
+        //cout << "center[" << maxi << "] : " << c.center.x <<   endl;
 				cv::Scalar red(255,0,0);
-			  cv::circle(cameraFrame, c.center, c.radius, red, 3);
+        cv::circle(cameraFrame, c.center, c.radius, red, 3);
 
-			  if(c.center.x < redFilter.cols/3){
-			    if(c.center.y < redFilter.rows/3){
-			      cout << "Avancer gauche" << endl;
-			      if(Sumo)
-			        Sumo->move(10,-20);
+        if(c.center.x > 2*cameraFrame.cols/5 && c.center.x < 3*cameraFrame.cols/5 ){
+          angle = 0;
+          if(vitesse>0){
+            putText(cameraFrame, "Avancer", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+          }else if(vitesse<0){
+            putText(cameraFrame, "Reculer", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+          } else if (vitesse==0){
+            putText(cameraFrame, "Arret", smallWord, FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
+          }
+        } else {
+          angle = (double)(-50/(double)(-cameraFrame.cols/2))*(-cameraFrame.cols/2+c.center.x);
+          if (vitesse>0){
+            if(angle>0){
+              putText(cameraFrame, "Avancer droite", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+            }else if(angle<0){
+              putText(cameraFrame, "Avancer gauche", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+            }
+          } else if (vitesse<0){
+            if(angle>0){
+              putText(cameraFrame, "Reculer droite", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+            }else if(angle<0){
+              putText(cameraFrame, "Reculer gauche", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+            }
+          } else if (vitesse ==0){
+             if(angle>0){
+              putText(cameraFrame, "Droite", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+            }else if(angle<0){
+              putText(cameraFrame, "Gauche", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+          }
+        } }
 
-			    }
-			    else if(c.center.y < 2*redFilter.rows/3){
-			      cout << "Gauche" << endl;
-			      if(Sumo)
-			        Sumo->move(10, -90);
-			    }
-			    else if(c.center.y < redFilter.rows){
-			      cout << "Reculer gauche" << endl;
-			      if(Sumo)
-			        Sumo->move(-10, 20);
+        if(c.center.y > 2*cameraFrame.rows/5 && c.center.y < 3*cameraFrame.rows/5) {
+          vitesse = 0;
+          if(angle>0){
+            putText(cameraFrame, "Droite", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+          }else if(angle<0){
+            putText(cameraFrame, "Gauche", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+          } else if (angle==0){
+            putText(cameraFrame, "Arret", smallWord, FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
+          }
+        } else {
 
-			    }
-			  }
-			  else if(c.center.x < 2*redFilter.cols/3){
-			    if(c.center.y < redFilter.rows/3){
-			      cout << "Avancer" << endl;
-			      if(Sumo)
-			        Sumo->move(15, 0);
-			    }
-			    else if(c.center.y < 2*redFilter.rows/3){
-			      cout << "Arrêt" << endl;
-			      if(Sumo)
-			        Sumo->move(0,0);
-			    }
-			    else if(c.center.y < redFilter.rows){
-			      cout << "Reculer" << endl;
-			      if(Sumo)
-			        Sumo->move(-30,0);
-			    }
-			  }
-			  else if(c.center.x < redFilter.cols){
-			    if(c.center.y < redFilter.rows/3){
-			      cout << "Avancer droite" << endl;
-			      if(Sumo)
-			        Sumo->move(10, 20);
-			    }
-			    else if(c.center.y < 2*redFilter.rows/3){
-			      cout << "Droite" << endl;
-			      if(Sumo)
-			        Sumo->move(10, 90);
-			    }
-			    else if(c.center.y < redFilter.rows){
-			      cout << "Reculer droite" << endl;
-			      if(Sumo)
-			        Sumo->move(-10, -90);
-			    }
-			  }
-			}else{
-			  cout << "Arret" << endl;
-			  if(Sumo)
-			    Sumo->move(0,0);
-			}
+          vitesse =  (double)(100/(double)(cameraFrame.rows/2))*(-c.center.y+cameraFrame.rows/2);
+          if (vitesse>0){
+            if(angle>0){
+              putText(cameraFrame, "Avancer droite", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+            }else if(angle<0){
+              putText(cameraFrame, "Avancer gauche", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+            }
+          } else if (vitesse<0){
+            if(angle>0){
+              putText(cameraFrame, "Reculer droite", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+            }else if(angle<0){
+              putText(cameraFrame, "Reculer gauche", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+            }
+          } else if (vitesse== 0){
+             if(angle>0){
+              putText(cameraFrame, "Droite", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+            }else if(angle<0){
+              putText(cameraFrame, "Gauche", smallWord, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 255), 2);
+          }
+        }
+      }
+      } else {
+        vitesse = 0;
+        angle = 0;
+      }
+
+         cout << "vitesse: " <<  vitesse << " angle: " << angle << endl;
+				 Sumo->move(vitesse,angle);
+
 
     imshow("Camera", cameraFrame);
+		//imshow("camera2", cameraFrameOrigin);
 		imshow("Red", redFilter);
 		imshow("Green", greenFilter);
 

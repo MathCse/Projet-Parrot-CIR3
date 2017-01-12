@@ -17,7 +17,7 @@ class OurCircle{
 	public:
 		Point2i center;
 		int radius;
-		bool exist;
+		bool exist = false;
 };
 
 
@@ -200,15 +200,19 @@ int main(int argc, char** argv)
 		stream1.set(CV_CAP_PROP_FRAME_WIDTH, 800);
 		stream1.set(CV_CAP_PROP_FRAME_HEIGHT, 600);
 
-
+    double deltaT=0;
+    double fps = 15;
+    OurCircle oldRedPoint;
+    stream1.set(CV_CAP_PROP_FPS, fps);
     while(true){
+      deltaT +=1/fps;
+
       Mat cameraFrame;
 			Mat redFilter;
 			Mat greenFilter;
 
       stream1.read(cameraFrame);
       flip(cameraFrame, cameraFrame, 1);
-
       Mat cameraFrameOrigin = cameraFrame;
       detectColor(cameraFrame, redFilter, H_MIN_RED, H_MAX_RED, S_MIN_RED, S_MAX_RED, V_MIN_RED, V_MAX_RED);
 			detectColor(cameraFrame, greenFilter, H_MIN_GREEN, H_MAX_GREEN, S_MIN_GREEN, S_MAX_GREEN, V_MIN_GREEN, V_MAX_GREEN);
@@ -218,10 +222,25 @@ int main(int argc, char** argv)
 			if(redPoint.exist){
 				cv::Scalar blue(0,255,0);
 				cv::circle(cameraFrame, redPoint.center, redPoint.radius, blue, 3);
-				std::cout << " JUMP! " << endl;
-				if(Sumo && sumoOk)
-					Sumo->highJump();
+        if(deltaT>=0.1){
+
+          if(!oldRedPoint.exist){
+            oldRedPoint = redPoint;
+            cout << "coucou" << endl;
+          } else {
+            cout << (-oldRedPoint.center.y+redPoint.center.y)<< endl;
+              if((-oldRedPoint.center.y+redPoint.center.y)<-60){
+                std::cout << " JUMP! " << endl;
+                Sumo->highJump();
+              }
+          }
+          deltaT = 0;
+        }
+
+        oldRedPoint = redPoint;
+
 			} else{
+        oldRedPoint.exist = false;
 				OurCircle c;
 				c = findPoint(greenFilter);
 				double vitesse, angle;

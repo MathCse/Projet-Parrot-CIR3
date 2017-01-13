@@ -7,10 +7,12 @@
 #include <string>
 #include <sstream>
 
+#include <vector>
 #include <string>
 #include <control.h>
 #include <image.h>
 #include <unistd.h>
+#include <math.h>
 
 using namespace cv;
 using namespace std;
@@ -62,6 +64,9 @@ int S_MIN_RED_DEFAULT = 0;
 int S_MAX_RED_DEFAULT = 255;
 int V_MIN_RED_DEFAULT = 0;
 int V_MAX_RED_DEFAULT = 255;
+
+
+int sumoOk=1;
 
 
 int DetectLines(Mat& src, Mat& dst)
@@ -258,17 +263,58 @@ void createTrackbars()
 	setTrackbarPos("V_MAX_RED", trackbarWindowName, V_MAX_RED_DEFAULT);
 }
 
+void makeSequence(vector<Point2i> listPointDraw, int sumoOk, sumo::Control * Sumo){
+	double v, theta;
+	Point2i oldPoint = listPointDraw[0];
+	cout << "taille liste: " << listPointDraw.size() << endl;
+	double oldtheta=0;
+	double dist;
+	double oldgeneral = 180*atan2((listPointDraw[1].y-listPointDraw[0].y),(listPointDraw[1].x-listPointDraw[0].x))/M_PI;
+	for (int i = 2; i < listPointDraw.size()+1; i++) {
+			dist = sqrt(pow((listPointDraw[i].y-listPointDraw[i-1].y),2)+pow((listPointDraw[i].x-listPointDraw[i-1].x),2));
+			theta = oldgeneral+(180*atan2((listPointDraw[i].y-listPointDraw[i-1].y),(listPointDraw[i].x-listPointDraw[i-1].x)))/M_PI;
+			if (i==2){
+				theta=0;
+			}
+			//theta = (int)theta%360; 
+			//if (theta>180){
+			//	theta = -(360-theta);
+			//}
+			oldgeneral = 180*atan2((listPointDraw[i].y-listPointDraw[i-1].y),(listPointDraw[i].x-listPointDraw[i-1].x))/M_PI;
+						cout << (int)theta%180 << endl;
+
+
+			theta = (int)theta%180;
+			/*if (theta>=90){
+				cout << "angle: " << -(int)th << endl;
+			}
+			if (theta<90){
+				cout << "angle: " << (int)theta%90 << endl;
+			}*/
+			//v = 10;
+			//if(sumoOk && Sumo){
+				//Sumo->move(v,theta);
+		//	}
+			// wait?
+				if(sumoOk && Sumo){
+					Sumo->move(0,0);
+					Sumo->quickTurn((M_PI*theta/180));
+					usleep(1000000);
+					Sumo->move(20,0);
+					usleep(0.2*(dist/20)*1000000);
+				}
+		//oldPoint = listPointDraw[i];
+	}
+}
 
 int main(int argc, char** argv)
 {
-
 		createTrackbars();
 		on_trackbar(0, 0);
 
 		//Ouverture du sumo
 		sumo::Control * Sumo;
 	  Sumo = new sumo::Control(new ImageProcessing);
-		int sumoOk=1;
 
 		if(sumoOk == 1){
 			Sumo->open();
@@ -280,7 +326,10 @@ int main(int argc, char** argv)
 		stream1.set(CV_CAP_PROP_FRAME_WIDTH, 800);
 		stream1.set(CV_CAP_PROP_FRAME_HEIGHT, 600);
 
+    int trace=0;
+    vector<Point2i> listPointDraw;
     double deltaT=0;
+    double deltaT2=0;
     double fps = 15;
     OurCircle oldRedPoint;
     stream1.set(CV_CAP_PROP_FPS, fps);
@@ -312,6 +361,15 @@ int main(int argc, char** argv)
 		}
 
     while(true){
+      if(waitKey(30)>=0 && trace==0){
+        trace=1;
+        cout << "Traçage du chemin..." << endl;
+      } else if (waitKey(30)>=0 && trace==1){
+        trace=0;
+        makeSequence(listPointDraw, sumoOk, Sumo);
+        cout << "Fin du dessin du chemin " << endl;
+        listPointDraw.clear();
+      }
       string battery = " ";
       if(Sumo && sumoOk){
         battery= to_string(Sumo->batteryLevel())+"%";
@@ -328,7 +386,27 @@ int main(int argc, char** argv)
 			detectColor(cameraFrame, greenFilter, H_MIN_GREEN, H_MAX_GREEN, S_MIN_GREEN, S_MAX_GREEN, V_MIN_GREEN, V_MAX_GREEN);
 			OurCircle redPoint;
 			redPoint = findPoint(redFilter);
-       putText(cameraFrame, battery, Point(20,20) , FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1);
+       putText(cameraFrame, battery, Point(20,35) , FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1);
+       if (trace==1){
+       		if(sumoOk && Sumo)
+       			Sumo->move(0,0);
+       		if(deltaT2>=1){
+       			OurCircle c2;
+			c2 = findPoint(greenFilter);
+				if (c2.exist){
+					listPointDraw.push_back(c2.center);
+				}
+				deltaT2 = 0;
+				
+       		} else {
+       			deltaT2+=1/fps;
+       		}
+       		for (int i=0; i<listPointDraw.size(); i++){
+				circle(cameraFrame, listPointDraw[i], 7, Scalar(255, 0, 0), CV_FILLED);
+			}
+
+       }
+       if (trace==0){
 			if(redPoint.exist){
 				cv::Scalar blue(0,255,0);
 				cv::circle(cameraFrame, redPoint.center, redPoint.radius, blue, 3);
@@ -336,12 +414,13 @@ int main(int argc, char** argv)
 
           if(!oldRedPoint.exist){
             oldRedPoint = redPoint;
+
           } else {
             cout << (-oldRedPoint.center.y+redPoint.center.y)<< endl;
               if((-oldRedPoint.center.y+redPoint.center.y)<-60){
                 std::cout << " JUMP! " << endl;
 								if(sumoOk && Sumo){
-                	Sumo->highJump();
+                					Sumo->highJump();
 								}
               }
               if((-oldRedPoint.center.x+redPoint.center.x)>60){
@@ -356,7 +435,7 @@ int main(int argc, char** argv)
 
         oldRedPoint = redPoint;
 
-			} else{
+			} else {
         oldRedPoint.exist = false;
 				OurCircle c;
 				c = findPoint(greenFilter);
@@ -365,6 +444,7 @@ int main(int argc, char** argv)
 					Point2i smallWord = c.center;
 	        smallWord.x -= 40;
 	        smallWord.y += 10;
+
 	        //cout << "center[" << maxi << "] : " << c.center.x <<   endl;
 					cv::Scalar red(255,0,0);
 	        cv::circle(cameraFrame, c.center, c.radius, red, 3);
@@ -435,11 +515,12 @@ int main(int argc, char** argv)
 	      } else {
 	        vitesse = 0;
 	        angle = 0;
-	      }
-				cout << "vitesse: " <<  vitesse << " angle: " << angle << endl;
+	      } 				cout << "vitesse: " <<  vitesse << " angle: " << angle << endl;
         rectangle(cameraFrame, Point(10,50), Point(10+1.2*fabs(vitesse),70),Scalar(0, 0, 255), CV_FILLED);
-				if(Sumo && sumoOk)
+				if(Sumo && sumoOk && trace == 0)
 					Sumo->move(vitesse,angle);
+			}
+
 
 			}
 
@@ -453,8 +534,8 @@ int main(int argc, char** argv)
 
 
       //imshow("result", dest);
-    if(waitKey(30)>=0)
-      break;
+    //if(waitKey(30)>=0)
+      //break;
     }
 
     return 0;

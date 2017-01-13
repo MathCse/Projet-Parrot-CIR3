@@ -63,8 +63,8 @@ CMAKE_BINARY_DIR = /home/mathieu/Documents/Travail/CIR3/2016-2017/Projet/Informa
 # Target rules for target CMakeFiles/qs.dir
 
 # All Build rule for target.
-CMakeFiles/qs.dir/all: CMakeFiles/qs_automoc.dir/all
 CMakeFiles/qs.dir/all: CMakeFiles/sumo.dir/all
+CMakeFiles/qs.dir/all: CMakeFiles/qs_automoc.dir/all
 	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/depend
 	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/mathieu/Documents/Travail/CIR3/2016-2017/Projet/Informatique/Projet-Parrot-CIR3/build/CMakeFiles --progress-num=6,7,8,9,10 "Built target qs"

@@ -47,6 +47,8 @@ string
 -
 sstream
 -
+vector
+-
 string
 -
 control.h
@@ -54,5 +56,7 @@ control.h
 image.h
 -
 unistd.h
+-
+math.h
 -
 

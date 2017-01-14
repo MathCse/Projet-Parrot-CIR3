@@ -1,3 +1,0 @@
-# Hashes of file build rules.
-5fd90a74b8afa8670d2ce943b815774a CMakeFiles/qs_automoc
-84754ccc51dc1ff22422f735330387c7 ui_widget.h

@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "qs_automoc.cpp"
   "CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o"
   "projetCIR.pdb"
   "projetCIR"

@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "qs_automoc.cpp"
   "CMakeFiles/sumo.dir/lib/decode.cpp.o"
   "CMakeFiles/sumo.dir/lib/control.cpp.o"
   "CMakeFiles/sumo.dir/lib/common.cpp.o"

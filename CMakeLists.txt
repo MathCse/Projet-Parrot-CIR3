@@ -35,38 +35,7 @@ if(UNIX AND NOT APPLE)
     target_link_libraries(sumo ${RT})
 endif()
 
-# build analyzer only if PCAP was found
-find_package(Pcap)
-if(PCAP_FOUND)
-	add_executable(analyze analyze/network.cpp analyze/main.cpp)
-	target_link_libraries(analyze ${PCAP_LIBRARIES} sumo)
-endif()
-
-add_executable(test_sumo test/test.cpp)
-target_link_libraries(test_sumo sumo)
-
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 add_executable(projetCIR projetCIR/main.cpp)
 target_link_libraries(projetCIR sumo ${OpenCV_LIBS})
-
-# qsumo
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-#set(CMAKE_AUTOUIC ON) # works only with cmake >= 3.0
-
-find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
-include(${QT_USE_FILE})
-
-set(qsumo_SRCS qsumo/qsumo.cpp qsumo/sumo-widget.cpp)
-
-QT4_WRAP_UI(ui_widget.h qsumo/widget.ui)
-
-add_executable(qs ${qsumo_SRCS} ui_widget.h)
-
-target_link_libraries(qs
-	${QT_LIBRARIES}
-	sumo
-)
-
-

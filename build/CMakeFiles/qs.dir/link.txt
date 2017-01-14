@@ -1,1 +1,0 @@
-/usr/bin/c++    -std=c++11 -Wall -Wextra   CMakeFiles/qs.dir/qsumo/qsumo.cpp.o CMakeFiles/qs.dir/qsumo/sumo-widget.cpp.o CMakeFiles/qs.dir/qs_automoc.cpp.o  -o qs -rdynamic -lQtGui -lQtCore libsumo.a -lpthread -lrt 

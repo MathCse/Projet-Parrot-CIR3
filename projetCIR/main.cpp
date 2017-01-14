@@ -66,7 +66,7 @@ int V_MIN_RED_DEFAULT = 0;
 int V_MAX_RED_DEFAULT = 255;
 
 
-int sumoOk=1;
+int sumoOk=0;
 
 
 int DetectLines(Mat& src, Mat& dst)

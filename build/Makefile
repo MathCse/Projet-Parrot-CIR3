@@ -48,24 +48,13 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mathieu/Documents/Travail/CIR3/2016-2017/Projet/Informatique/Projet-Parrot-CIR3
+CMAKE_SOURCE_DIR = /home/adrien/parrot/Projet-Parrot-CIR3
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mathieu/Documents/Travail/CIR3/2016-2017/Projet/Informatique/Projet-Parrot-CIR3/build
+CMAKE_BINARY_DIR = /home/adrien/parrot/Projet-Parrot-CIR3/build
 
 #=============================================================================
 # Targets provided globally by CMake.
-
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -78,11 +67,22 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
+
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mathieu/Documents/Travail/CIR3/2016-2017/Projet/Informatique/Projet-Parrot-CIR3/build/CMakeFiles /home/mathieu/Documents/Travail/CIR3/2016-2017/Projet/Informatique/Projet-Parrot-CIR3/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/adrien/parrot/Projet-Parrot-CIR3/build/CMakeFiles /home/adrien/parrot/Projet-Parrot-CIR3/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mathieu/Documents/Travail/CIR3/2016-2017/Projet/Informatique/Projet-Parrot-CIR3/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/adrien/parrot/Projet-Parrot-CIR3/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,58 +111,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named qs
-
-# Build rule for target.
-qs: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 qs
-.PHONY : qs
-
-# fast build rule for target.
-qs/fast:
-	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/build
-.PHONY : qs/fast
-
-#=============================================================================
-# Target rules for targets named sumo
-
-# Build rule for target.
-sumo: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 sumo
-.PHONY : sumo
-
-# fast build rule for target.
-sumo/fast:
-	$(MAKE) -f CMakeFiles/sumo.dir/build.make CMakeFiles/sumo.dir/build
-.PHONY : sumo/fast
-
-#=============================================================================
-# Target rules for targets named test_sumo
-
-# Build rule for target.
-test_sumo: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test_sumo
-.PHONY : test_sumo
-
-# fast build rule for target.
-test_sumo/fast:
-	$(MAKE) -f CMakeFiles/test_sumo.dir/build.make CMakeFiles/test_sumo.dir/build
-.PHONY : test_sumo/fast
-
-#=============================================================================
-# Target rules for targets named analyze
-
-# Build rule for target.
-analyze: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 analyze
-.PHONY : analyze
-
-# fast build rule for target.
-analyze/fast:
-	$(MAKE) -f CMakeFiles/analyze.dir/build.make CMakeFiles/analyze.dir/build
-.PHONY : analyze/fast
-
-#=============================================================================
 # Target rules for targets named projetCIR
 
 # Build rule for target.
@@ -176,71 +124,17 @@ projetCIR/fast:
 .PHONY : projetCIR/fast
 
 #=============================================================================
-# Target rules for targets named qs_automoc
+# Target rules for targets named sumo
 
 # Build rule for target.
-qs_automoc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 qs_automoc
-.PHONY : qs_automoc
+sumo: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 sumo
+.PHONY : sumo
 
 # fast build rule for target.
-qs_automoc/fast:
-	$(MAKE) -f CMakeFiles/qs_automoc.dir/build.make CMakeFiles/qs_automoc.dir/build
-.PHONY : qs_automoc/fast
-
-analyze/main.o: analyze/main.cpp.o
-
-.PHONY : analyze/main.o
-
-# target to build an object file
-analyze/main.cpp.o:
-	$(MAKE) -f CMakeFiles/analyze.dir/build.make CMakeFiles/analyze.dir/analyze/main.cpp.o
-.PHONY : analyze/main.cpp.o
-
-analyze/main.i: analyze/main.cpp.i
-
-.PHONY : analyze/main.i
-
-# target to preprocess a source file
-analyze/main.cpp.i:
-	$(MAKE) -f CMakeFiles/analyze.dir/build.make CMakeFiles/analyze.dir/analyze/main.cpp.i
-.PHONY : analyze/main.cpp.i
-
-analyze/main.s: analyze/main.cpp.s
-
-.PHONY : analyze/main.s
-
-# target to generate assembly for a file
-analyze/main.cpp.s:
-	$(MAKE) -f CMakeFiles/analyze.dir/build.make CMakeFiles/analyze.dir/analyze/main.cpp.s
-.PHONY : analyze/main.cpp.s
-
-analyze/network.o: analyze/network.cpp.o
-
-.PHONY : analyze/network.o
-
-# target to build an object file
-analyze/network.cpp.o:
-	$(MAKE) -f CMakeFiles/analyze.dir/build.make CMakeFiles/analyze.dir/analyze/network.cpp.o
-.PHONY : analyze/network.cpp.o
-
-analyze/network.i: analyze/network.cpp.i
-
-.PHONY : analyze/network.i
-
-# target to preprocess a source file
-analyze/network.cpp.i:
-	$(MAKE) -f CMakeFiles/analyze.dir/build.make CMakeFiles/analyze.dir/analyze/network.cpp.i
-.PHONY : analyze/network.cpp.i
-
-analyze/network.s: analyze/network.cpp.s
-
-.PHONY : analyze/network.s
-
-# target to generate assembly for a file
-analyze/network.cpp.s:
-	$(MAKE) -f CMakeFiles/analyze.dir/build.make CMakeFiles/analyze.dir/analyze/network.cpp.s
-.PHONY : analyze/network.cpp.s
+sumo/fast:
+	$(MAKE) -f CMakeFiles/sumo.dir/build.make CMakeFiles/sumo.dir/build
+.PHONY : sumo/fast
 
 lib/common.o: lib/common.cpp.o
 
@@ -404,134 +298,16 @@ projetCIR/main.cpp.s:
 	$(MAKE) -f CMakeFiles/projetCIR.dir/build.make CMakeFiles/projetCIR.dir/projetCIR/main.cpp.s
 .PHONY : projetCIR/main.cpp.s
 
-qs_automoc.o: qs_automoc.cpp.o
-
-.PHONY : qs_automoc.o
-
-# target to build an object file
-qs_automoc.cpp.o:
-	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/qs_automoc.cpp.o
-.PHONY : qs_automoc.cpp.o
-
-qs_automoc.i: qs_automoc.cpp.i
-
-.PHONY : qs_automoc.i
-
-# target to preprocess a source file
-qs_automoc.cpp.i:
-	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/qs_automoc.cpp.i
-.PHONY : qs_automoc.cpp.i
-
-qs_automoc.s: qs_automoc.cpp.s
-
-.PHONY : qs_automoc.s
-
-# target to generate assembly for a file
-qs_automoc.cpp.s:
-	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/qs_automoc.cpp.s
-.PHONY : qs_automoc.cpp.s
-
-qsumo/qsumo.o: qsumo/qsumo.cpp.o
-
-.PHONY : qsumo/qsumo.o
-
-# target to build an object file
-qsumo/qsumo.cpp.o:
-	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/qsumo/qsumo.cpp.o
-.PHONY : qsumo/qsumo.cpp.o
-
-qsumo/qsumo.i: qsumo/qsumo.cpp.i
-
-.PHONY : qsumo/qsumo.i
-
-# target to preprocess a source file
-qsumo/qsumo.cpp.i:
-	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/qsumo/qsumo.cpp.i
-.PHONY : qsumo/qsumo.cpp.i
-
-qsumo/qsumo.s: qsumo/qsumo.cpp.s
-
-.PHONY : qsumo/qsumo.s
-
-# target to generate assembly for a file
-qsumo/qsumo.cpp.s:
-	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/qsumo/qsumo.cpp.s
-.PHONY : qsumo/qsumo.cpp.s
-
-qsumo/sumo-widget.o: qsumo/sumo-widget.cpp.o
-
-.PHONY : qsumo/sumo-widget.o
-
-# target to build an object file
-qsumo/sumo-widget.cpp.o:
-	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/qsumo/sumo-widget.cpp.o
-.PHONY : qsumo/sumo-widget.cpp.o
-
-qsumo/sumo-widget.i: qsumo/sumo-widget.cpp.i
-
-.PHONY : qsumo/sumo-widget.i
-
-# target to preprocess a source file
-qsumo/sumo-widget.cpp.i:
-	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/qsumo/sumo-widget.cpp.i
-.PHONY : qsumo/sumo-widget.cpp.i
-
-qsumo/sumo-widget.s: qsumo/sumo-widget.cpp.s
-
-.PHONY : qsumo/sumo-widget.s
-
-# target to generate assembly for a file
-qsumo/sumo-widget.cpp.s:
-	$(MAKE) -f CMakeFiles/qs.dir/build.make CMakeFiles/qs.dir/qsumo/sumo-widget.cpp.s
-.PHONY : qsumo/sumo-widget.cpp.s
-
-test/test.o: test/test.cpp.o
-
-.PHONY : test/test.o
-
-# target to build an object file
-test/test.cpp.o:
-	$(MAKE) -f CMakeFiles/test_sumo.dir/build.make CMakeFiles/test_sumo.dir/test/test.cpp.o
-.PHONY : test/test.cpp.o
-
-test/test.i: test/test.cpp.i
-
-.PHONY : test/test.i
-
-# target to preprocess a source file
-test/test.cpp.i:
-	$(MAKE) -f CMakeFiles/test_sumo.dir/build.make CMakeFiles/test_sumo.dir/test/test.cpp.i
-.PHONY : test/test.cpp.i
-
-test/test.s: test/test.cpp.s
-
-.PHONY : test/test.s
-
-# target to generate assembly for a file
-test/test.cpp.s:
-	$(MAKE) -f CMakeFiles/test_sumo.dir/build.make CMakeFiles/test_sumo.dir/test/test.cpp.s
-.PHONY : test/test.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... qs"
-	@echo "... sumo"
-	@echo "... test_sumo"
-	@echo "... analyze"
 	@echo "... projetCIR"
-	@echo "... qs_automoc"
-	@echo "... analyze/main.o"
-	@echo "... analyze/main.i"
-	@echo "... analyze/main.s"
-	@echo "... analyze/network.o"
-	@echo "... analyze/network.i"
-	@echo "... analyze/network.s"
+	@echo "... rebuild_cache"
+	@echo "... sumo"
 	@echo "... lib/common.o"
 	@echo "... lib/common.i"
 	@echo "... lib/common.s"
@@ -550,18 +326,6 @@ help:
 	@echo "... projetCIR/main.o"
 	@echo "... projetCIR/main.i"
 	@echo "... projetCIR/main.s"
-	@echo "... qs_automoc.o"
-	@echo "... qs_automoc.i"
-	@echo "... qs_automoc.s"
-	@echo "... qsumo/qsumo.o"
-	@echo "... qsumo/qsumo.i"
-	@echo "... qsumo/qsumo.s"
-	@echo "... qsumo/sumo-widget.o"
-	@echo "... qsumo/sumo-widget.i"
-	@echo "... qsumo/sumo-widget.s"
-	@echo "... test/test.o"
-	@echo "... test/test.i"
-	@echo "... test/test.s"
 .PHONY : help
 
 

@@ -4,31 +4,19 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/mathieu/Documents/Travail/CIR3/2016-2017/Projet/Informatique/Projet-Parrot-CIR3/projetCIR/main.cpp" "/home/mathieu/Documents/Travail/CIR3/2016-2017/Projet/Informatique/Projet-Parrot-CIR3/build/CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o"
+  "/home/adrien/parrot/Projet-Parrot-CIR3/projetCIR/main.cpp" "/home/adrien/parrot/Projet-Parrot-CIR3/build/CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
-# Preprocessor definitions for this target.
-set(CMAKE_TARGET_DEFINITIONS_CXX
-  "QT_CORE_LIB"
-  "QT_GUI_LIB"
-  "QT_NO_DEBUG"
-  )
-
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "."
-  "../"
   "../lib"
   "/usr/include/opencv"
-  "/usr/include/qt4"
-  "/usr/include/qt4/QtGui"
-  "/usr/include/qt4/QtCore"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/mathieu/Documents/Travail/CIR3/2016-2017/Projet/Informatique/Projet-Parrot-CIR3/build/CMakeFiles/sumo.dir/DependInfo.cmake"
+  "/home/adrien/parrot/Projet-Parrot-CIR3/build/CMakeFiles/sumo.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

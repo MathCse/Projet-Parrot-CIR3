@@ -6,3 +6,9 @@ CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o
  ../lib/control.h
  ../lib/image.h
  /home/adrien/parrot/Projet-Parrot-CIR3/projetCIR/main.cpp
+ /home/adrien/parrot/Projet-Parrot-CIR3/projetCIR/recognition/detection.h
+ /home/adrien/parrot/Projet-Parrot-CIR3/projetCIR/recognition/ourCircle.h
+CMakeFiles/projetCIR.dir/projetCIR/recognition/detection.cpp.o
+ /home/adrien/parrot/Projet-Parrot-CIR3/projetCIR/recognition/detection.cpp
+ /home/adrien/parrot/Projet-Parrot-CIR3/projetCIR/recognition/detection.h
+ /home/adrien/parrot/Projet-Parrot-CIR3/projetCIR/recognition/ourCircle.h

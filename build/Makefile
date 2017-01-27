@@ -298,6 +298,33 @@ projetCIR/main.cpp.s:
 	$(MAKE) -f CMakeFiles/projetCIR.dir/build.make CMakeFiles/projetCIR.dir/projetCIR/main.cpp.s
 .PHONY : projetCIR/main.cpp.s
 
+projetCIR/recognition/detection.o: projetCIR/recognition/detection.cpp.o
+
+.PHONY : projetCIR/recognition/detection.o
+
+# target to build an object file
+projetCIR/recognition/detection.cpp.o:
+	$(MAKE) -f CMakeFiles/projetCIR.dir/build.make CMakeFiles/projetCIR.dir/projetCIR/recognition/detection.cpp.o
+.PHONY : projetCIR/recognition/detection.cpp.o
+
+projetCIR/recognition/detection.i: projetCIR/recognition/detection.cpp.i
+
+.PHONY : projetCIR/recognition/detection.i
+
+# target to preprocess a source file
+projetCIR/recognition/detection.cpp.i:
+	$(MAKE) -f CMakeFiles/projetCIR.dir/build.make CMakeFiles/projetCIR.dir/projetCIR/recognition/detection.cpp.i
+.PHONY : projetCIR/recognition/detection.cpp.i
+
+projetCIR/recognition/detection.s: projetCIR/recognition/detection.cpp.s
+
+.PHONY : projetCIR/recognition/detection.s
+
+# target to generate assembly for a file
+projetCIR/recognition/detection.cpp.s:
+	$(MAKE) -f CMakeFiles/projetCIR.dir/build.make CMakeFiles/projetCIR.dir/projetCIR/recognition/detection.cpp.s
+.PHONY : projetCIR/recognition/detection.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -326,6 +353,9 @@ help:
 	@echo "... projetCIR/main.o"
 	@echo "... projetCIR/main.i"
 	@echo "... projetCIR/main.s"
+	@echo "... projetCIR/recognition/detection.o"
+	@echo "... projetCIR/recognition/detection.i"
+	@echo "... projetCIR/recognition/detection.s"
 .PHONY : help
 
 

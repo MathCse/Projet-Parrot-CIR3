@@ -37,5 +37,5 @@ endif()
 
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
-add_executable(projetCIR projetCIR/main.cpp)
+add_executable(projetCIR projetCIR/main.cpp projetCIR/recognition/detection.cpp)
 target_link_libraries(projetCIR sumo ${OpenCV_LIBS})

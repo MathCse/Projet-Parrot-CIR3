@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o"
+  "CMakeFiles/projetCIR.dir/projetCIR/recognition/detection.cpp.o"
   "projetCIR.pdb"
   "projetCIR"
 )

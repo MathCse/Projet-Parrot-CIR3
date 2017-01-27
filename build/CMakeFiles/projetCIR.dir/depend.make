@@ -5,4 +5,10 @@ CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o: ../lib/basics.h
 CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o: ../lib/control.h
 CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o: ../lib/image.h
 CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o: ../projetCIR/main.cpp
+CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o: ../projetCIR/recognition/detection.h
+CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o: ../projetCIR/recognition/ourCircle.h
+
+CMakeFiles/projetCIR.dir/projetCIR/recognition/detection.cpp.o: ../projetCIR/recognition/detection.cpp
+CMakeFiles/projetCIR.dir/projetCIR/recognition/detection.cpp.o: ../projetCIR/recognition/detection.h
+CMakeFiles/projetCIR.dir/projetCIR/recognition/detection.cpp.o: ../projetCIR/recognition/ourCircle.h
 

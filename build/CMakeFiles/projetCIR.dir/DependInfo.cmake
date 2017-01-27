@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/adrien/parrot/Projet-Parrot-CIR3/projetCIR/main.cpp" "/home/adrien/parrot/Projet-Parrot-CIR3/build/CMakeFiles/projetCIR.dir/projetCIR/main.cpp.o"
+  "/home/adrien/parrot/Projet-Parrot-CIR3/projetCIR/recognition/detection.cpp" "/home/adrien/parrot/Projet-Parrot-CIR3/build/CMakeFiles/projetCIR.dir/projetCIR/recognition/detection.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

@@ -18,6 +18,7 @@
 
 using namespace cv;
 using namespace std;
+cv::Mat frame;
 
 
 class ImageProcessing : public sumo::Image
@@ -25,11 +26,11 @@ class ImageProcessing : public sumo::Image
 public:
 	void handleImage(const struct sumo::image *, const uint8_t *buffer, size_t size)
 	{
-    cout << "receive frame" << endl; //ttest
+    //Transformation du buffer en objet Mat pour l'exploitation openCV
     std::vector<uint8_t> v;
-    //v.assign(buffer, buffer+size);
-    //cv::Mat img = cv::imdecode(v, CV_LOAD_IMAGE_COLOR);
-		fprintf(stderr, "received image of %zu bytes at %p\n", size, buffer);
+    v.assign(buffer, buffer+size);
+    frame = cv::imdecode(v, CV_LOAD_IMAGE_COLOR);
+		//fprintf(stderr, "received image of %zu bytes at %p\n", size, buffer);
 	}
 };
 int H_MIN_GREEN = 0;
@@ -62,6 +63,7 @@ int V_MAX_RED_DEFAULT = 255;
 
 
 int sumoOk=0;
+
 
 
 bool readDefaultCalibration(){
@@ -261,6 +263,9 @@ int main()
 		}
 
     while(true){
+      if(!frame.empty()){
+        imshow("Sumo view", frame); //Affichage
+      }
       if(waitKey(30)>=0 && trace==0){
         trace=1;
         cout << "Traçage du chemin..." << endl;
@@ -418,7 +423,7 @@ int main()
 	      } 				cout << "vitesse: " <<  vitesse << " angle: " << angle << endl;
         rectangle(cameraFrame, Point(10,50), Point(10+1.2*fabs(vitesse),70),Scalar(0, 0, 255), CV_FILLED);
 				if(Sumo && sumoOk && trace == 0)
-					Sumo->move(vitesse,angle);
+					Sumo->move(vitesse*1,angle);
 			}
 
 
